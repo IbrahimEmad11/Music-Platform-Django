@@ -1,0 +1,30 @@
+
+
+{% for artist in artists %} 
+<p>Artist:</p> 
+<ul>
+  <li>id: {{artist.id}}</li>
+  <li>Name: {{artist.stage_name}}</li>
+  <li>Social Link: {{artist.social_link}}</li>
+  <li>Albums:</li>
+    {% for a in approved %}
+    {%if a.artist == artist %}
+    <ul>
+      <li> id: {{a.id}} </li>
+      <li> Name: {{a.album_name}}</li>
+      <li>Creation Time: {{a.creation_time}}</li>  
+      <li>Release Time: {{a.release_time}}</li>
+      <li>Cost: {{a.cost}}</li> 
+    
+    </ul>
+    <hr/>
+  {% endif %}
+  {% endfor %}
+</ul>
+{% endfor %}
+          
+ 
+     
+            
+    
+    
