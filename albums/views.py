@@ -1,31 +1,22 @@
-from cgitb import html
-from xmlrpc.client import DateTime
-from django.shortcuts import render
-from pyexpat import model
-from .models import Artist
-from albums.models import Album
-from django import forms
+from .forms import AlbumForm,SongForm
+from django.views.generic.edit import FormView,CreateView
+from django.urls import reverse_lazy
+
+class AlbumView(FormView):
+    template_name = 'create_album.html'
+    form_class = AlbumForm
+    success_url = "."
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
 
 
+class SongView(CreateView):
+    template_name = 'create_song.html'
+    form_class = SongForm
+    success_url = reverse_lazy('song')
 
-class AlbumForm(forms.ModelForm):
-
-    release_time= forms.DateField(widget=forms.DateInput)
-    class Meta:
-     model = Album
-     fields = '__all__'
-     
-
-def create_album(request):
-
-    if request.method=='POST':
-        form=AlbumForm(request.POST)
-        if form.is_valid():
-            form.save()
-            form = AlbumForm()
-        
-        
-    
-    else:
-        form =AlbumForm()
-    return render(request,'create_album.html', {'form': form})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context

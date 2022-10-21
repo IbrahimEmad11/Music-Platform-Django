@@ -1,30 +1,18 @@
-from django.shortcuts import render
-from pyexpat import model
-from django.views.generic import ListView
-from django.core.exceptions import ValidationError
 from .models import Artist
 from albums.models import Album
-from django import forms
+from django.views.generic import ListView, FormView
+from .forms import ArtistForm
 
 
+class ArtistView(FormView):
+    template_name = 'create_artist.html'
+    form_class = ArtistForm
+    success_url = "."
 
-class ArtistForm(forms.ModelForm):
-   class Meta:
-     model = Artist
-     fields = '__all__'
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
 
-def create_artist(request):
-
-    if request.method=='POST':
-        form=ArtistForm(request.POST)
-        if form.is_valid():
-            form.save()
-            form = ArtistForm()
-        
-    
-    else:
-        form =ArtistForm()
-    return render(request,'create_artist.html', {'form': form})
 
 class ArtistList(ListView):
 

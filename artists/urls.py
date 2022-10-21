@@ -1,10 +1,10 @@
 from django.urls import path
-
 from . import views
+from .views import ArtistList,ArtistForm, ArtistView
 
-from artists.views import ArtistList
+
 
 urlpatterns=[
-    path('' , ArtistList.as_view(), name='artist_list'),
-    path('create/' , views.create_artist , name='create')
+    path('' , ArtistList.as_view(), name='artists'),
+    path('create/' , ArtistView.as_view() , name='create')
 ]

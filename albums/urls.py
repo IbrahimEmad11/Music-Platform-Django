@@ -2,8 +2,11 @@ from django.urls import path
 
 from . import views
 
+from .views import AlbumView,SongView
+
 
 
 urlpatterns=[
-    path('create/' , views.create_album , name='create')
+    path('create/' , AlbumView.as_view() , name='create'),
+    path('song/' , SongView.as_view() , name='song'),
 ]
