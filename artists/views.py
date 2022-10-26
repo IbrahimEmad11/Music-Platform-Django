@@ -3,6 +3,10 @@ from albums.models import Album
 from django.views.generic import ListView, FormView
 from .forms import ArtistForm
 
+from artists.models import Artist
+from artists.serializers import ArtistSerializer
+from rest_framework import generics
+
 
 class ArtistView(FormView):
     template_name = 'create_artist.html'
@@ -14,16 +18,7 @@ class ArtistView(FormView):
         return super().form_valid(form)
 
 
-class ArtistList(ListView):
-
-    model = Artist
-    template_name='artist_list.html'
-    context_object_name = 'artists'
-
-    def get_context_data(self, **kwargs):
-        
-        
-        context = super(ArtistList, self).get_context_data(**kwargs)
-        context['approved'] = Album.objects.all()
-        return context
+class ArtistList(generics.ListCreateAPIView):
+    queryset = Artist.objects.all()
+    serializer_class = ArtistSerializer
 
