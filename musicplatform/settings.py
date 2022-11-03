@@ -31,6 +31,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'knox',
+    'django_extensions',
     'rest_framework',
     'artists',
     'albums',
@@ -128,3 +130,8 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_ROOT= os.path.join(BASE_DIR , 'media')
 MEDIA_URL='/media/'
+AUTH_USER_MODEL= 'users.User'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',),
+}

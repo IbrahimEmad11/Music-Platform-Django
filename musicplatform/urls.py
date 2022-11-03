@@ -7,7 +7,9 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('artists/', include('artists.urls')),
     path('albums/', include('albums.urls')),
-    path('login/', include('users.urls')),
-    path('login/', include('django.contrib.auth.urls')),
+    path('users/', include('users.urls')),
+    path('users/', include('django.contrib.auth.urls')),
+    path('authentication/', include('authentication.urls')),
+    path('authentication/', include('django.contrib.auth.urls')),
     path('admin/', admin.site.urls),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

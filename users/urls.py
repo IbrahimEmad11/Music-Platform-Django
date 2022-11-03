@@ -1,11 +1,9 @@
 from django.urls import path
-from . import views
-from .views import LoginPageView
-# from .views import ArtistList,ArtistForm, ArtistView
+from .views import UserAPI
+
 
 
 
 urlpatterns=[
-    path('' , LoginPageView.as_view(), name='login'),
-    
+    path('<pk>/', UserAPI.as_view(), name='user_api'),
 ]
