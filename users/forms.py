@@ -6,4 +6,4 @@ class UserForm(forms.ModelForm ):
     bio = forms.CharField( widget=forms.Textarea )
     class Meta:
         model = User
-        exclude = ()
+        fields = ['username','email', 'password1','password2']

@@ -7,7 +7,6 @@ def test_register():
     info_dict = dict(username = "IbrahimE11" ,password= "lmao1234")
     response = client.post('/authentication/register/',info_dict)
     data =response.data
-    print(data)
     assert 'password' not in data
 
 

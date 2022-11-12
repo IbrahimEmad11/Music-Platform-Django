@@ -23,7 +23,9 @@ class TimeStampedModel(models.Model):
     class Meta:
         abstract = True
  
-
+class AlbumManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_approved=True)
 
 class Album (TimeStampedModel):
 
@@ -32,6 +34,9 @@ class Album (TimeStampedModel):
     release_time=models.DateField(blank=False)
     cost=models.FloatField(default=0)
     is_approved=models.BooleanField(default=False)
+
+    objects = models.Manager() # The default manager.
+    approved_objects = AlbumManager()
     
     def __str__(self):
         return self.album_name
@@ -50,8 +55,8 @@ class Song (models.Model):
 
     name = models.CharField(max_length=60 ,blank=True)
     img= models.ImageField(upload_to='',null=True,blank=True  )
-    img_thumbnail=ImageSpecField(source='img' ,format='JPEG',processors=[ResizeToFill(200,100)],options={'quality':60})
-    audio=models.FileField(upload_to='audio',validators=[validate_file_extension])
+    img_thumbnail=ImageSpecField(source='img' ,format='JPEG',processors=[ResizeToFill(200,100)])
+    audio=models.FileField(upload_to='audio',validators=[validate_file_extension],null=True , blank=True)
     album=models.ForeignKey(Album , on_delete=models.CASCADE, )
     
     

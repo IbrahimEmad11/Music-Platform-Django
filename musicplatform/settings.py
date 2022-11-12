@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'albums',
     'users',
     'imagekit',
+    'django_filters',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -134,4 +135,6 @@ AUTH_USER_MODEL= 'users.User'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',),
-}
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'DEFAULT_FILTER_BACKEND' : ('django_filters.rest_framework.DjangoFilterBackend',),
+    }
