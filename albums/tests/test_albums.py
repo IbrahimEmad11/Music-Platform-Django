@@ -26,6 +26,7 @@ def test_auth_post(auth_client):
     artist=Artist.objects.create(stage_name='Gamed',user=user)
     album = Album.objects.create(artist=artist, album_name='Struggling',release_time="2022-9-12" ,cost=199.0, is_approved=True)
     album_serializer= AlbumSerializer(album).data
+    print (album_serializer)
     #Getting response
     response = auth_client().post('/albums/',album_serializer)
     assert response.status_code == 201 

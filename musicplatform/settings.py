@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import os
 from pathlib import Path
+from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -31,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'django_celery_beat',
     'knox',
     'django_extensions',
     'rest_framework',
@@ -138,3 +140,16 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'DEFAULT_FILTER_BACKEND' : ('django_filters.rest_framework.DjangoFilterBackend',),
     }
+
+# CELERY_SETTINGS
+CELERY_CONF_BROKER_URL = 'redis://127.0.0.1:6379'
+CELERY_CONF_RESULT_BACKEND = "redis://127.0.0.1:6379"
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_CONF_BEAT_SCHEDULE ={
+    'check_30days': {
+        'task': 'albums.tasks.check_30days',
+        'schedule': crontab(minute=0, hour='*/24'),
+    },
+}

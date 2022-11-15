@@ -1,14 +1,13 @@
-from distutils import extension
-from email.policy import default
-from wsgiref.validate import validator
 from django.db import models
 from datetime import date,datetime
 from model_utils.fields import AutoCreatedField
 from django.utils.translation import gettext_lazy as _
 from artists.models import Artist
+from users.models import User
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 from django.core.exceptions import ValidationError
+from .tasks import send_email_task
 
 
 
@@ -29,7 +28,7 @@ class AlbumManager(models.Manager):
 
 class Album (TimeStampedModel):
 
-    artist=models.ForeignKey(Artist, on_delete=models.CASCADE)  
+    artist=models.ForeignKey(Artist, on_delete=models.CASCADE,related_name='related_artist')  
     album_name=models.CharField(max_length=30,default='New Album',)
     release_time=models.DateField(blank=False)
     cost=models.FloatField(default=0)
@@ -38,8 +37,15 @@ class Album (TimeStampedModel):
     objects = models.Manager() # The default manager.
     approved_objects = AlbumManager()
     
+    class Meta:
+        ordering = ['-creation_time']
+
     def __str__(self):
         return self.album_name
+
+    def save(self, *args, **kwargs):
+        send_email_task(self.artist.user.email,self.artist , self.album_name)
+        super(Album, self).save(*args, **kwargs)
 
 # For Validation of extension of audio file:
 

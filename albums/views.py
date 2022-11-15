@@ -2,6 +2,9 @@ from .forms import AlbumForm,SongForm
 from .models import Album,AlbumManager
 from .serializers import AlbumSerializer
 from .filters import AlbumFilter
+from artists.serializers import ArtistSerializer
+from artists.models import Artist
+from .tasks import send_email_task
 from django.views.generic.edit import FormView,CreateView
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -60,19 +63,27 @@ class AlbumList(ListAPIView):
     filterset_class =AlbumFilter
 
     # @permission_classes([permissions.AllowAny])
-    def get(self ,*args, **kwargs):
-        album=Album.approved_objects.all()
-        serializers=AlbumSerializer(album,many=True)
-        return Response(serializers.data , status=status.HTTP_200_OK)
+    def get(self, request, *args, **kwargs):
+        album = Album.approved_objects.all()
+        artist = Artist.objects.all()
+        a_serialzer_data = ArtistSerializer(artist, many=True)
+        b_serialzer_data = AlbumSerializer(album, many=True)
+        return Response({
+            "artist": a_serialzer_data.data,
+            "album": b_serialzer_data.data
+        })
    
     def post(self ,request):
         if 'artist' not in request.data.keys():
             return Response(status=status.HTTP_403_FORBIDDEN)
         serializers=AlbumSerializer(data=request.data)
+
         if serializers.is_valid() :
             serializers.save()
+            send_email_task(request.user.email ,serializers.data['artist'] ,serializers.data['album_name'])
             return Response(serializers.data, status=status.HTTP_201_CREATED)
         return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class AlbumListManual(ListAPIView):
